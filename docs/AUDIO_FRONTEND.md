@@ -1,3 +1,5 @@
+> CHI V1 scope: one instructor/TA participant and one facilitator, no students. Prioritize processed UAC audio, device AEC, speech activity and Whisper input. DoA and multi-person fusion remain optional; azimuth calibration must not block V1. Set audio.doa_enabled=false to skip DoA polling. A failed optional DoA read does not suppress successful energy/speech observations. See [study protocol](STUDY_V1.md).
+
 # XVF3800 audio front end
 
 **XVF3800 is the V1 canonical audio front end.** Simulation emits the same AudioObservation data class. Device-specific telemetry stays in services/audio/xvf3800; the room agent receives neither raw beam arrays nor USB command access.

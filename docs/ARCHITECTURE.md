@@ -1,11 +1,27 @@
+# Product-first instructor application
+
+**Research tooling is preserved but temporarily frozen while the instructor-facing product interaction is developed.** The researcher console is preserved but product UI/functionality is now the primary implementation priority. The instructor-only CHI V1 constraint below remains protected.
+
+`/` serves InstructorApp; `/devices`, `/settings` and `/dev` use the same normalized product view model. The existing ResearchApp and its stylesheet are lazy-loaded only at `/research`. Query parameters on the main route do not enable research tools. Backend study routes, models, replay, logging and injections remain unchanged except necessary shared-device compatibility.
+
+`product.py` projects RoomState into InstructorAppState without internal/research metadata. AI modes Off/Assist/Auto map to existing authority, independently of hardware profiles. Async model availability/evaluation keeps manual operations and Take Control responsive. Product approvals bind to ID and expire after 45 seconds. `product_events.py` provides a bounded device-only history and precondition-checked latest-action undo; recording transport is never implicitly undone.
+
+`DeviceRouter` delegates recording/program semantics through VideoEngine. SimVideoEngine provides honest simulated state/illustrated preview; OBSVideoEngine is a disconnected boundary awaiting transport/readback. No OBS calls in frontend or orchestration. Room display remains separate. Shared typed intents now include camera follow, display blank and audio mute. Product defaults persist in ignored config/local.product.json; advanced hardware setup remains explicit future adapter work.
+
+See [product behavior and startup](PRODUCT.md) for API and limitations. Physical protocols and research workflow are not this milestone's implementation target.
+
+---
+
 # Supported simulation runtime (2026-09-19)
+
+**CHI V1 is an instructor/TA-only controlled teaching-task study. Student presence is outside the V1 experimental scope.** One participant and one facilitator; no student actors. See [protected V1 protocol and teaching-task script](STUDY_V1.md).
 
 Simulation is a permanent product/research runtime; no hardware ownership is needed to contribute. [Runtime reference](SIMULATION.md) defines profiles, APIs, scenario schema, replay and known limits.
 
 ```text
 YAML timeline / normalized replay / real audio + real or simulated camera
   → ObservationFrame(AudioObservation, VisionObservation(PersonTrack), SceneObservation)
-  → ActiveSpeakerFusion → sustained StateEstimator → RoomState
+  → optional ActiveSpeakerFusion / known-presenter evidence → sustained StateEstimator → RoomState
   → Fake / Rule / strict Ollama RoomAgent → optional logged experiment injection
   → delegation + typed safety validation → independently selected device adapters
   → simulated readback or honest unavailable failure → study logger
@@ -16,6 +32,16 @@ No simulation branches exist in fusion, estimation or agent reasoning. Simulated
 DeviceRouter selects camera_control, projector, audio_output and recorder independently. Physical output adapters are explicit unavailable placeholders until implementation/verification; they do not mutate device state. Real camera and XVF share normalized types with their simulation adapters. Hybrid's asynchronous inference cannot block observation collection.
 
 Study UI hides technical diagnostics and injection metadata by default. Researcher view is a local presentation switch, not an authentication boundary. Replay is normalized trial replay with device baseline and current authority; complete participant session action re-enactment remains future work.
+
+## Protected V1 scope and shared evidence
+
+V1 uses one presenter participant and one facilitator, no students/actors, and one PTZ with presenter/demo_zone/wide semantic intents. Required activities are PRE_CLASS, LECTURE/PRESENTATION, DEMONSTRATION, MEDIA_PLAYBACK, TRANSITION, POST_CLASS and UNKNOWN. Q&A, Discussion, Student Presentation and Side Conversation remain supported extensions, not V1 study requirements.
+
+SceneObservation now includes session_phase, transitioning and presentation_source. The existing pipeline accepts an explicitly assigned single presenter track plus speech/scene evidence without DoA or calibrated camera-azimuth geometry. Optional geometric fusion still supports multi-person research; neither the agent nor estimator has a separate simulation/instructor-only implementation. XVF's optional DoA read is isolated from energy/speech availability. Processed audio, AEC and Whisper/STT remain the V1 priorities.
+
+`study.py` handles protocol/task bookkeeping only; `runtime.py` still produces and consumes normalized trials. `config/study/chi_v1.yaml` defines 14 common teaching prompts. Six permutations counterbalance condition order. Store assigned condition separately from effective authority, so Take Control does not relabel the assigned experimental condition. Per-capability restrictions deny AI actions, preserving manual controls.
+
+`study_logger.py` attaches participant/run/task/current-and-assigned-condition context. Task outcomes, response latencies and explicit post-condition ratings/preferences supplement existing action/recommendation/override events. Participant-safe task prompts contain no scenario names or injection metadata. Full protocol and metric definitions: [STUDY_V1.md](STUDY_V1.md).
 
 ## Implementation detail
 

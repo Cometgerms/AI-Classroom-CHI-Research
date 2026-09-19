@@ -5,11 +5,11 @@ class FakeAgent(RoomAgent):
     async def decide(self, state: RoomState) -> AgentDecision:
         a = state.activity.state
         actions: list[Action] = []
-        if a == ActivityState.LECTURE:
+        if a in (ActivityState.PRE_CLASS, ActivityState.LECTURE):
             actions = [
-                Action(tool="camera_focus", args={"target": "instructor"}, reason="Instructor is primary speaker", confidence=.97),
+                Action(tool="display_set_source", args={"source": state.observations.presentation_source}, reason="Present the selected teaching source"),
+                Action(tool="camera_focus", args={"target": "presenter"}, reason="Instructor is primary speaker", confidence=.97),
                 Action(tool="audio_set_mode", args={"mode": "lecture"}, reason="Lecture activity", confidence=.96),
-                Action(tool="student_voice_lift", args={"enabled": False}, reason="No audience voice lift needed in lecture", confidence=.96),
                 Action(tool="recording_set_layout", args={"layout": "slides_plus_instructor"}, reason="Lecture composition", confidence=.94),
             ]
         elif a == ActivityState.Q_AND_A:
@@ -22,7 +22,6 @@ class FakeAgent(RoomAgent):
             actions = [
                 Action(tool="display_set_source", args={"source": "presentation"}, reason="Media is the primary content", confidence=.96),
                 Action(tool="audio_set_mode", args={"mode": "media"}, reason="Program audio is active", confidence=.95),
-                Action(tool="student_voice_lift", args={"enabled": False}, reason="Student voice lift is not needed during media playback", confidence=.95),
                 Action(tool="recording_set_layout", args={"layout": "media_primary"}, reason="Prioritize program content", confidence=.93),
             ]
         elif a == ActivityState.DEMONSTRATION:

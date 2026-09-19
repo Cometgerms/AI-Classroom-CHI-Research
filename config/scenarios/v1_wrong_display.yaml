@@ -1,0 +1,33 @@
+version: 1
+scope: chi_v1_instructor
+duration: 1.5
+tick_seconds: 0.1
+calibration:
+  calibrated: false
+  points:
+  - image_x: 0
+    azimuth_deg: -90
+  - image_x: 1
+    azimuth_deg: 90
+events:
+- at: 0
+  audio:
+    speech_active: true
+    doa_degrees: null
+    audio_device_available: true
+    activity_calibrated: true
+  tracks:
+  - track_id: presenter
+    image_x: 0.5
+    role: instructor
+  scene:
+    instructor_speaking: true
+    presentation_active: true
+    transcript: Today I will explain this example.
+    presentation_source: presentation
+- at: 0.1
+injection:
+  kind: action
+  tool: display_set_source
+  args:
+    source: camera

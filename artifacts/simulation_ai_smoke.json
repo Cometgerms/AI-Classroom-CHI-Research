@@ -6,29 +6,27 @@
     {
       "condition": "manual",
       "status": "PASS",
-      "activity": "Q&A",
+      "activity": "DEMONSTRATION",
       "tools": []
     },
     {
       "condition": "assistive",
       "status": "PASS",
-      "activity": "Q&A",
+      "activity": "DEMONSTRATION",
       "tools": [
         "camera_focus",
-        "audio_set_mode",
-        "student_voice_lift",
-        "recording_set_layout"
+        "display_set_source",
+        "audio_set_mode"
       ]
     },
     {
       "condition": "autonomous",
       "status": "PASS",
-      "activity": "Q&A",
+      "activity": "DEMONSTRATION",
       "tools": [
         "camera_focus",
-        "audio_set_mode",
-        "student_voice_lift",
-        "recording_set_layout"
+        "display_set_source",
+        "audio_set_mode"
       ]
     }
   ]

@@ -14,7 +14,13 @@ class StateEstimator:
         scene=frame.scene;audio=frame.audio
         activity=ActivityState.UNKNOWN
         evidence=[]
-        if not audio.audio_device_available or not frame.vision.camera_available:
+        if scene.session_phase=='pre_class':
+            activity=ActivityState.PRE_CLASS;evidence=['Teaching session preparing']
+        elif scene.session_phase=='post_class':
+            activity=ActivityState.POST_CLASS;evidence=['Teaching session ended']
+        elif scene.transitioning:
+            activity=ActivityState.TRANSITION;evidence=['Presentation transition in progress']
+        elif not audio.audio_device_available or not frame.vision.camera_available:
             evidence=['Perception unavailable']
         elif scene.program_audio and scene.hdmi_playback and not scene.instructor_speaking:
             activity=ActivityState.MEDIA_PLAYBACK;evidence=['Sustained HDMI playback','Program audio','Instructor silent']
@@ -27,10 +33,10 @@ class StateEstimator:
                 activity=ActivityState.DISCUSSION;evidence=['Repeated audience turn-taking']
             elif speaker.role=='student' and scene.instructor_yielded and not scene.instructor_speaking:
                 activity=ActivityState.Q_AND_A;evidence=['Localized audience speaker','Instructor yielded floor','Speech sustained']
-            elif speaker.role=='instructor' and scene.object_visible and scene.presenter_zone=='demo_zone':
+            elif speaker.role in ('instructor','presenter') and scene.object_visible and scene.presenter_zone=='demo_zone':
                 activity=ActivityState.DEMONSTRATION;evidence=['Instructor at demonstration zone','Object visible']
-            elif speaker.role=='instructor' and scene.instructor_speaking:
-                activity=ActivityState.LECTURE;evidence=['Localized instructor speech','Presentation active']
+            elif speaker.role in ('instructor','presenter') and scene.instructor_speaking:
+                activity=ActivityState.LECTURE;evidence=['Presenter speech and tracking','Presentation active']
         if activity!=self.candidate:
             self.candidate,self.since=activity,t
         if t-self.since < self.sustain-1e-9:

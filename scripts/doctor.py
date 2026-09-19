@@ -106,7 +106,7 @@ def main():
     yolo_ok=probe('Person tracking',yolo)
     core=all(importlib.util.find_spec(name) for name in ('fastapi','pydantic','yaml','httpx','uvicorn'))
     calibrated=config['audio']['speech_activity']['energy_threshold'] is not None
-    audio_ready=uac_ok and control_ok and doa_ok and energy_ok and calibrated
+    audio_ready=uac_ok and energy_ok and calibrated  # DoA is optional for instructor-only V1.
     readiness={'Simulation basic':bool(core),'Simulation AI':bool(core and ollama and model_ok),
         'XVF hybrid':bool(core and audio_ready and stt_ok),
         'Full hardware':False}  # Physical output adapters are not implemented.

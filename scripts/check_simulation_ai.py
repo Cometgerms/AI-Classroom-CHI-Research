@@ -11,7 +11,8 @@ sys.path.insert(0,str(ROOT/'backend'))
 from app.runtime import ClassroomRuntime
 from app.config import runtime_config,settings
 from app.state_store import store
-from app.models import RoomState,Condition,ActivityState
+from app.models import RoomState,Condition,ActivityState,StudyStartRequest
+from app.study import start as start_study
 from app.devices import executor
 from app.study_logger import logger
 
@@ -23,8 +24,9 @@ async def main():
     for condition in Condition:
         store.state=RoomState(condition=condition);store.pending=None;store.history=[]
         executor.configure(runtime_config['hardware'])
-        result=await runtime.run_scenario('student_question')
-        assert store.state.activity.state==ActivityState.Q_AND_A
+        await start_study(StudyStartRequest(counterbalance_index=0,condition_position=list(Condition).index(condition)))
+        result=await runtime.run_scenario('v1_demonstration')
+        assert store.state.activity.state==ActivityState.DEMONSTRATION
         if condition==Condition.MANUAL:
             assert result['decision'] is None and not store.history
         else:

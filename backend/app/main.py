@@ -14,17 +14,24 @@ from .scenarios import SCENARIOS, apply_scenario
 from .devices import executor, DeviceUnavailable
 from .delegation import CAPABILITY_BY_TOOL
 from .orchestrator import orchestrator
+from . import study
+from .product import router as product_router, service as product_service
+from .models import StudyStartRequest, TaskCompletionRequest, ConditionFeedback, RestrictionRequest
 
 @asynccontextmanager
 async def lifespan(app):
     app.state.audio_runtime = ClassroomRuntime(runtime_config)
     await app.state.audio_runtime.start()
+    await product_service.start()
     try:
         yield
     finally:
+        await product_service.stop()
         await app.state.audio_runtime.stop()
 
 app = FastAPI(title="Agentic Classroom Milestone 1", version="0.2.0", lifespan=lifespan)
+
+app.include_router(product_router)
 
 @app.get('/api/audio')
 async def audio_status():
@@ -48,7 +55,9 @@ async def config(researcher: bool = False):
     participant=runtime_config['runtime'].get('participant_view',False) and not researcher
     return {"runtime":runtime_config['runtime']['label'],"profile":runtime_config['runtime']['profile'],
             "participant_view":participant,"agent_backend": settings.agent_backend, "ollama_model": settings.ollama_model,
-            "scenarios": [] if participant else catalog()}
+            "scenarios": [] if participant else [name for name in catalog() if name.startswith("v1_")],
+            "extended_scenarios": [] if participant else [name for name in catalog() if not name.startswith("v1_")],
+            "study_scope":"chi_v1_instructor"}
 
 @app.post("/api/participant")
 async def participant(req: ParticipantRequest):
@@ -61,6 +70,8 @@ async def participant(req: ParticipantRequest):
 @app.post("/api/condition")
 async def condition(req: ConditionRequest):
     async with store.control_lock:
+        if store.state.study and not store.state.study.finished:
+            raise HTTPException(409,'Study condition is assigned by counterbalancing; use Take Control to reclaim authority')
         store.pending = None
         state = await store.mutate(lambda s: setattr(s, "condition", req.condition))
         logger.log("condition_changed", condition=req.condition.value, participant_id=state.participant_id)
@@ -148,9 +159,10 @@ async def recommendation_apply():
         actions = rec.decision.actions
         store.pending = None
         for a in actions:
-            await executor.execute(a)
+            if CAPABILITY_BY_TOOL[a.tool] not in store.state.restricted_capabilities:
+                await executor.execute(a)
         state = await store.snapshot()
-        logger.log("recommendation_applied", recommendation_id=rec.id, actions=[a.model_dump() for a in actions], participant_id=state.participant_id)
+        logger.log("recommendation_applied", response_latency_ms=study.elapsed(rec.created_at), recommendation_id=rec.id, actions=[a.model_dump() for a in actions], participant_id=state.participant_id)
         await store.broadcast()
         return state
 
@@ -163,7 +175,7 @@ async def recommendation_dismiss():
             raise HTTPException(404, "No pending recommendation")
         store.pending = None
         state = await store.snapshot()
-        logger.log("recommendation_dismissed", recommendation_id=rec.id, participant_id=state.participant_id)
+        logger.log("recommendation_dismissed", response_latency_ms=study.elapsed(rec.created_at), recommendation_id=rec.id, participant_id=state.participant_id)
         await store.broadcast()
         return state
 
@@ -174,10 +186,48 @@ async def override(req: OverrideRequest):
         store.pending = None
         state = await store.undo() if req.mode == "undo" else await store.snapshot()
         if req.mode == "manual":
-            # M1 uses global condition for the 3-level study. Fine-grained capability authority comes in Milestone 1.5/2.
+            # Take Control revokes global AI authority; per-capability restrictions are independent.
             state = await store.mutate(lambda s: setattr(s, "condition", Condition.MANUAL))
         logger.log("participant_override", capability=req.capability, mode=req.mode, participant_id=state.participant_id)
         return state
+
+@app.post('/api/authority/restrict')
+async def restrict(req: RestrictionRequest):
+    async with store.control_lock:
+        store.pending=None
+        def update(state):
+            current=set(state.restricted_capabilities)
+            if req.restricted: current.add(req.capability)
+            else: current.discard(req.capability)
+            state.restricted_capabilities=sorted(current)
+        state=await store.mutate(update)
+        logger.log('authority_restriction',capability=req.capability,restricted=req.restricted)
+        return state
+
+@app.get('/api/study/protocol')
+async def study_protocol(): return study.public_protocol()
+
+@app.post('/api/study/start')
+async def study_start(req: StudyStartRequest):
+    if runtime_config['runtime']['profile'] not in ('simulation-basic','simulation-ai','study'):
+        raise HTTPException(409,'Built-in controlled study playback requires a simulation/study profile')
+    try: return await study.start(req)
+    except ValueError as exc: raise HTTPException(409,str(exc))
+
+@app.post('/api/study/next')
+async def study_next():
+    try: return await study.advance(classroom_runtime())
+    except ValueError as exc: raise HTTPException(409,str(exc))
+
+@app.post('/api/study/complete')
+async def study_complete(req: TaskCompletionRequest):
+    try: return await study.complete(req)
+    except ValueError as exc: raise HTTPException(409,str(exc))
+
+@app.post('/api/study/feedback')
+async def study_feedback(req: ConditionFeedback):
+    try: return await study.feedback(req)
+    except ValueError as exc: raise HTTPException(409,str(exc))
 
 @app.get("/api/logs/recent")
 async def logs(limit: int = 100):

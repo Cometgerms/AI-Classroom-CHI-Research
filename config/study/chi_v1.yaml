@@ -1,0 +1,53 @@
+protocol: chi_v1_instructor
+participant_count: 1
+facilitator_count: 1
+student_count: 0
+student_actors_required: false
+camera_targets:
+- presenter
+- demo_zone
+- wide
+tasks:
+- id: begin
+  instruction: Begin the teaching session. Check your AV setup.
+  scenario: v1_pre_class
+- id: slides
+  instruction: Open your slides and show the presentation source.
+  scenario: v1_lecture
+- id: present
+  instruction: Present three slides while speaking.
+  scenario: v1_lecture
+- id: move
+  instruction: Move away from the lectern while continuing to teach.
+  scenario: v1_presenter_moves
+- id: whiteboard
+  instruction: Move to the whiteboard or demonstration area.
+  scenario: v1_whiteboard
+- id: demo
+  instruction: Perform the brief standardized demonstration.
+  scenario: v1_demonstration
+- id: return_slides
+  instruction: Return to your slides and continue presenting.
+  scenario: v1_lecture
+- id: video
+  instruction: Play the supplied short embedded video with program audio.
+  scenario: v1_media_playback
+- id: stop_video
+  instruction: Pause or stop the video and return to presentation.
+  scenario: v1_lecture
+- id: application
+  instruction: Switch to the supplied alternate presentation/application source.
+  scenario: v1_source_change
+- id: normal_lecture
+  instruction: Return to the normal lecture presentation.
+  scenario: v1_lecture
+- id: check_av
+  instruction: Continue presenting and check that your slides remain visible.
+  scenario: v1_wrong_display
+- id: recover
+  instruction: Restore or maintain your intended AV setup using the controls available
+    to you.
+  scenario: null
+- id: end
+  instruction: End the teaching session and stop any recording.
+  scenario: v1_post_class

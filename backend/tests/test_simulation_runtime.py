@@ -63,7 +63,7 @@ async def test_profile_does_not_set_authority(profile,condition):
 
 @pytest.mark.asyncio
 async def test_injection_logged_without_participant_cues_and_replay():
-    runtime=ClassroomRuntime(load_config(profile='study',environ={}))
+    runtime=ClassroomRuntime(load_config(profile='simulation-basic',environ={}))
     store.state.condition=Condition.ASSISTIVE
     result=await runtime.run_scenario('controlled_wrong_qna')
     assert result['recommendation'].decision.activity_state==ActivityState.Q_AND_A

@@ -56,3 +56,23 @@ Simulation-basic, simulation-ai, hybrid, hardware and study are runtime profiles
 Versioned YAML timelines generate normalized AudioObservation/VisionObservation/SceneObservation frames. Same fusion/estimator applies to real sensing, simulation and replay; virtual calibration is explicit and does not certify real geometry. Scenarios evaluate once after their timeline; live streams evaluate stable changes. Direct semantic labels are debug-only. Controlled errors transform decisions before authority policy and are logged separately without participant UI markers.
 
 Replay records trial sensor inputs, initial simulated devices, calibration and injection metadata. Replaying preserves current participant/authority to support comparisons; full participant-session command reenactment is not yet implemented. Study participant view hides technical controls; researcher query is local presentation, not access control. Physical PJLink/PTZ/OBS/audio output remain honest unavailable adapters. Strict Qwen full-loop smoke passed all three conditions before any physical AV integration work.
+
+## 2026-09-19 — Protected instructor-only CHI poster V1 scope
+
+CHI V1 is an instructor/TA-only controlled teaching-task study. Student presence is outside the V1 experimental scope. Each session has one instructor/TA/experienced-presenter participant and one researcher/facilitator, with no student actors. This supersedes earlier student-oriented study examples and any implication that DoA calibration or multi-person fusion is required for V1.
+
+Keep the existing normalized observation pipeline, estimator, agent, policy and adapters. Add PRE_CLASS/POST_CLASS and known-presenter evidence without acoustic localization; retain all multi-person states and scenarios as deferred extensions. XVF priorities are processed microphone audio, AEC, speech activity and local Whisper input. One PTZ with presenter/demo_zone/wide intents is sufficient. No DoA calibration work may block study development.
+
+The controlled 14-step teaching script is identical across six counterbalanced condition orders. Wrong display at step 12 is the standardized AI-condition failure; manual receives the same physical teaching/check/recovery prompts but no fabricated AI action. Wrong camera/audio/recording fixtures are available for pre-specified variants. This planned difference must be explicit in failure-recovery analysis.
+
+Add task/completion/latency logging, per-capability authority restrictions and post-condition ratings/preferences. Preserve assigned condition separately from effective authority after Take Control. Single-item 1–7 control/trust/workload ratings are implementation defaults, not claims of validated questionnaires. Old handoffs remain immutable; the new handoff supersedes their V1 scope.
+
+## 2026-09-19 — Product-first instructor application; research tooling frozen
+
+Research tooling is preserved but temporarily frozen while the instructor-facing product interaction is developed. The researcher console is preserved but product UI/functionality is now the primary implementation priority. This changes implementation priority, not the protected instructor-only CHI V1 research scope.
+
+The main `/` route is Agentic Classroom with AI Mode Off/Assist/Auto, independent of hardware runtime. Existing researcher code and CSS move intact to the lazy-loaded `/research` route; study routes/models/logs/replay/injections remain. Product consumes `/api/instructor/state`, a clean view model without trial metadata. `/devices`, `/settings` and `/dev` separate operation, configuration and diagnostics. Primary local development is simulation-ai with strict Qwen; core-only simulation-basic remains supported.
+
+Add deterministic follow/blank/mute controls, explicit recording/timer/layout, bounded action feed, safe latest-action undo, ID/expiry-bound product recommendations and AI-independent Take Control. VideoEngine abstracts simulated recording/program from a future OBS transport. OBS selection currently reports disconnected; no physical protocol was implemented to finish UI. Program preview is explicitly an illustration; simulated recording does not create a file. Room display remains independent of recording/program availability.
+
+Settings persist local defaults only; unsupported hardware calibration/mapping/destination controls are described honestly. No separate simulator UI, cloud dependencies, research-workflow enhancements, or changes to the three experimental definitions.

@@ -75,6 +75,8 @@ class ClassroomRuntime:
     async def run_scenario(self,name,realtime=False):
         if self.config['runtime']['profile'] not in ('simulation-basic','simulation-ai','study'):
             raise ValueError('Use normalized observations in hybrid/hardware; scenario playback is a simulation runtime')
+        if (self.config['runtime']['profile']=='study' or store.state.study) and not name.startswith('v1_'):
+            raise ValueError('Multi-person/development scenarios are outside the protected CHI V1 study scope')
         data=load_scenario(name)
         recording=Recording(calibration=data['calibration'],condition=store.state.condition,initial_devices=store.state.devices.model_copy(deep=True),frames=list(frames(data)),
                             injection=data.get('injection'),device_failure=data.get('device_failure'))
@@ -83,6 +85,11 @@ class ClassroomRuntime:
         if self.config['runtime']['profile'] not in ('simulation-basic','simulation-ai','study'):
             raise ValueError('Replay requires a simulation profile')
         if recording.version!=1: raise ValueError('Unsupported recording version')
+        if self.config['runtime']['profile']=='study' or store.state.study:
+            if (recording.injection or {}).get('kind')=='wrong_qna' or any(
+                frame.scene.audience_speaking or frame.scene.student_at_front or
+                any(track.role=='student' for track in frame.vision.tracks) for frame in recording.frames):
+                raise ValueError('Multi-person replay is outside the protected CHI V1 study scope')
         # Validate the entire tape before mutating any state.
         if any(a.timestamp>b.timestamp for a,b in zip(recording.frames,recording.frames[1:])):
             raise ValueError('Replay clocks must be monotonic')

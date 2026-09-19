@@ -62,7 +62,9 @@ class Control:
     def get_doa(self):
         if self.disconnected: raise ConnectionError('unplugged')
         return [0,1,2,math.radians(52)]
-    def get_speech_energy(self): return [0,1,2,20]
+    def get_speech_energy(self):
+        if self.disconnected: raise ConnectionError('unplugged')
+        return [0,1,2,20]
     def close(self): pass
 
 class Audio:

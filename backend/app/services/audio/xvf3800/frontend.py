@@ -41,10 +41,16 @@ class XVF3800AudioFrontEnd:
         async with self._lock:
             start=time.monotonic()
             try:
-                raw_doa=await asyncio.to_thread(self.control.get_doa)
                 raw_energy=await asyncio.to_thread(self.control.get_speech_energy)
                 orientation=self.config['xvf3800']
-                doa=parse_doa(raw_doa,orientation['azimuth_offset_deg'],orientation['invert_azimuth'])
+                doa=(None,None,None,None)
+                doa_error=None
+                if self.config.get('doa_enabled',True):
+                    try:
+                        raw_doa=await asyncio.to_thread(self.control.get_doa)
+                        doa=parse_doa(raw_doa,orientation['azimuth_offset_deg'],orientation['invert_azimuth'])
+                    except Exception as exc:
+                        doa_error=f'Optional DoA unavailable: {exc}'
                 energy=parse_energy(raw_energy)
                 self.diagnostics=BeamTelemetry(doa,energy)
                 timestamp=time.monotonic()
@@ -52,7 +58,7 @@ class XVF3800AudioFrontEnd:
                 if self.config.get('speech_activity_backend')=='silero':
                     active=await self._silero_activity()
                 self.control_available=True
-                self.last_error=None if self.audio.available() else 'UAC unavailable; telemetry only'
+                self.last_error=doa_error if self.audio.available() else 'UAC unavailable; telemetry only'
                 calibrated=self.activity.threshold is not None or self.config.get('speech_activity_backend')=='silero'
                 if not calibrated: self.last_error='Calibrate audio.speech_activity.energy_threshold before speech inference'
                 return AudioObservation(timestamp,active,energy[3],doa[3],None,'auto_selected',

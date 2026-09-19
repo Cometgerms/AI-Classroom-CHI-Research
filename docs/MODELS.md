@@ -1,6 +1,6 @@
 # V1 model and hardware inventory — 2026-09-19
 
-**XVF3800 is the V1 canonical audio front end.** Required for the full V1 perception prototype: Qwen3:8b, whisper.cpp small.en, YOLO nano person detection/tracking, and XVF3800 processed audio/DoA/speech activity. Simulation requires none of the hardware/perception dependencies. Optional: Qwen3-VL event-triggered escalation, pose, Silero alternative VAD, ODAS alternative localization. Do not run ODAS alongside XVF in ordinary V1.
+**XVF3800 is the V1 canonical audio front end.** Required for the full V1 perception prototype: Qwen3:8b, whisper.cpp small.en, YOLO nano person detection/tracking, and XVF3800 processed audio/speech activity. DoA is optional context, not a prerequisite for the instructor-only CHI V1 study. Simulation requires none of the hardware/perception dependencies. Optional: Qwen3-VL event-triggered escalation, pose, Silero alternative VAD, ODAS alternative localization. Do not run ODAS alongside XVF in ordinary V1.
 
 XVF host source: official ReSpeaker Python implementation at commit `a652fe79da3a292b25decc0e1e7f267d29bb0284`, checksum pinned in the control adapter. Downloaded into ignored vendor/xvf3800. No physical XVF was accessible in this session, so firmware version and live readings remain unverified. See AUDIO_FRONTEND.md for upstream links and normalized contracts. Generic VAD/localization implementations are preserved.
 

@@ -1,5 +1,7 @@
 # Supported simulation — Windows
 
+CHI V1 is an instructor/TA-only controlled teaching-task study: one participant and one facilitator, no students/actors. DoA calibration and student tracking are not prerequisites. See [study protocol](STUDY_V1.md).
+
 Simulation is a permanent product/research mode. No physical AV hardware is needed to contribute. Install Python 3.12 and Node 22+, then from repository root in PowerShell:
 
 ```powershell
@@ -16,7 +18,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. For real local Qwen, install/start Ollama and run `ollama pull qwen3:8b`; stop the backend and relaunch from root with `& backend/.venv/Scripts/python.exe -m backend --profile simulation-ai`. Clear conflicting AGENT_BACKEND entries from backend/.env/environment. This strict profile never substitutes Fake. `--profile study` defaults to participant presentation; `http://localhost:5173/?researcher=1` opens researcher controls. Use `--profile hybrid` with independent adapter selections in ignored config/local.yaml. `--profile hardware` reports unavailable physical outputs honestly. Study authority is independent of profiles.
+Open http://localhost:5173. For real local Qwen, install/start Ollama and run `ollama pull qwen3:8b`; stop the backend and relaunch from root with `& backend/.venv/Scripts/python.exe -m backend --profile simulation-ai`. Clear conflicting AGENT_BACKEND entries from backend/.env/environment. This strict profile never substitutes Fake. `--profile study` defaults to participant presentation; `http://localhost:5173/research` opens researcher controls. Use `--profile hybrid` with independent adapter selections in ignored config/local.yaml. `--profile hardware` reports unavailable physical outputs honestly. Study authority is independent of profiles.
 
 ```powershell
 & backend/.venv/Scripts/python.exe scripts/doctor.py --profile simulation-basic

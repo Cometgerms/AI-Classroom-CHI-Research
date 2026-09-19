@@ -12,3 +12,5 @@ runtime:
   label: STUDY
   profile: study
   participant_view: true
+scenario:
+  default: v1_pre_class

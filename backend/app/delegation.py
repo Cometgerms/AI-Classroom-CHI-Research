@@ -8,6 +8,7 @@ class PolicyDecision:
 
 CAPABILITY_BY_TOOL = {
     "camera_focus": "camera",
+    "camera_set_follow": "camera",
     "display_set_source": "display",
     "audio_set_mode": "audio",
     "student_voice_lift": "audio",

@@ -21,3 +21,6 @@ vendor/
 *.mlmodelc/
 artifacts/private/
 config/local.yaml
+
+config/local.product.json
+config/local.product.tmp

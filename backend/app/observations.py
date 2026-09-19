@@ -1,10 +1,14 @@
 """Validated, serializable sensor contract used by live adapters, scenarios and replay."""
+from typing import Literal
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 from .services.audio.models import AudioObservation
 from .services.vision.observation import VisionObservation
 
 class SceneObservation(BaseModel):
     model_config=ConfigDict(extra='forbid')
+    session_phase: Literal['pre_class','teaching','post_class'] = 'teaching'
+    transitioning: bool = False
+    presentation_source: Literal['presentation','room_pc','camera'] = 'presentation'
     transcript: str = ''
     instructor_speaking: bool = False
     audience_speaking: bool = False

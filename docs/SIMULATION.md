@@ -1,5 +1,7 @@
 # Supported simulation and replay
 
+**CHI V1 is an instructor/TA-only controlled teaching-task study. Student presence is outside the V1 experimental scope.** One participant and one facilitator; no student actors. See [protected V1 protocol and teaching-task script](STUDY_V1.md).
+
 Simulation is a supported product and research runtime. Every developer can contribute without owning AV hardware. It remains supported when real adapters are added.
 
 | Profile | Sensors / AV | Agent | Purpose |
@@ -20,19 +22,21 @@ Launch from repository root with `python -m backend --profile PROFILE` using the
 
 Versioned `config/scenarios/*.yaml` specifies a zero-based timeline, sample interval, duration, initial sensor evidence and scheduled partial updates. The loader carries evidence forward and emits normalized frames. No ordinary scenario specifies an activity label. Student question produces LECTURE → TRANSITION → Q&A from instructor silence/yield, speech, 54° DoA, student_3 at x=.8, and transcript/presentation evidence.
 
-Catalog: lecture_start, instructor_moves, demonstration, student_question, discussion, media_playback, side_conversation, student_presentation, ambiguous_activity, sensor_dropout, device_failure, controlled_wrong_qna, controlled_wrong_camera, controlled_wrong_display, controlled_wrong_audio. The UI discovers the catalog from the backend.
+Extended development catalog (not required for CHI V1): lecture_start, instructor_moves, demonstration, student_question, discussion, media_playback, side_conversation, student_presentation, ambiguous_activity, sensor_dropout, device_failure, controlled_wrong_qna, controlled_wrong_camera, controlled_wrong_display, controlled_wrong_audio. The UI discovers the catalog from the backend.
 
-`POST /api/scenario/student_question` plays virtual time deterministically. Add `?realtime=true` to honor scheduled delays. A scenario is one experimental trial: each frame passes through fusion/estimation, then the agent evaluates the final state once. This avoids repeated model calls or transitional recommendations within a trial. Use successive scenarios or normalized observation calls for multiple decision points. Concurrent scenario/replay runs serialize. Manual controls/Take Control can run during playback/inference; current authority and stale-inference guards apply.
+`POST /api/scenario/v1_demonstration` plays virtual time deterministically. Add `?realtime=true` to honor scheduled delays. A scenario is one experimental trial: each frame passes through fusion/estimation, then the agent evaluates the final state once. This avoids repeated model calls or transitional recommendations within a trial. Use successive scenarios or normalized observation calls for multiple decision points. Concurrent scenario/replay runs serialize. Manual controls/Take Control can run during playback/inference; current authority and stale-inference guards apply.
 
 `POST /api/observations` submits a validated normalized frame through the same pipeline and agent for external drivers. Do not move time backwards within a stream. `POST /api/scene` supplies scene evidence to live acquisition. Hybrid's live audio clock joins camera observations to the same pipeline, with asynchronous inference so model latency does not stop sensing. Scene semantics/STT still need an upstream producer; the runtime does not invent teacher roles, yielding or playback from hardware alone.
 
-`POST /api/simulation/sensors` accepts an ObservationFrame and updates only selected simulated audio/camera adapters plus scene evidence, useful with hybrid. Real adapters are not overwritten. Simulated camera tracks are refreshed on the live audio clock. Hybrid physical fusion still requires measured camera/audio calibration.
+`POST /api/simulation/sensors` accepts an ObservationFrame and updates only selected simulated audio/camera adapters plus scene evidence, useful with hybrid. Real adapters are not overwritten. Simulated camera tracks are refreshed on the live audio clock. Optional multi-person physical fusion requires measured camera/audio calibration; known-presenter V1 inference does not.
 
 ## Controlled errors and participant presentation
 
+Primary V1 fixtures are v1_pre_class, v1_lecture, v1_presenter_moves, v1_whiteboard, v1_demonstration, v1_media_playback, v1_source_change, v1_transition, v1_post_class, and v1_wrong_camera/display/audio/recording. The study profile starts PRE_CLASS. The V1 task runner uses 14 identical teaching prompts across counterbalanced conditions; student-oriented scenarios are rejected during V1 sessions.
+
 Scenario metadata can specify `injection: {kind: wrong_qna}` or a validated action injection (`kind: action`, `tool`, `args`). Injection transforms the agent decision before the unchanged delegation policy. Manual still skips AI, Assistive still requires Apply. Wrong-Q&A retains the correctly estimated side conversation internally, while the injected decision acts as Q&A. `device_failure` marks a simulated adapter unavailable and never updates that device as if successful.
 
-`experiment_injection` JSONL events record intentional errors. Recommendations use ordinary participant-facing reasons; normalized evidence and last_scenario carry no injection markers. Study's default UI hides agent/runtime diagnostics, evidence, scenario names and researcher controls. Open `http://localhost:5173/?researcher=1` for the local researcher console. This is presentation separation, not authentication; API/log access and query parameters are researcher-trusted on localhost. Do not expose this single-user prototype publicly.
+`experiment_injection` JSONL events record intentional errors. Recommendations use ordinary participant-facing reasons; normalized evidence and last_scenario carry no injection markers. Study's default UI hides agent/runtime diagnostics, evidence, scenario names and researcher controls. Open `http://localhost:5173/research` for the local researcher console. This is presentation separation, not authentication; API/log access and query parameters are researcher-trusted on localhost. Do not expose this single-user prototype publicly.
 
 Direct semantic injection remains explicitly debug-only at `/api/debug/scenario/{name}` and is disabled in study. Normal scenario playback never calls that code.
 

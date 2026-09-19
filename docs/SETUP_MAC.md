@@ -1,5 +1,7 @@
 # Supported simulation — macOS
 
+CHI V1 is an instructor/TA-only controlled teaching-task study: one participant and one facilitator, no students/actors. DoA calibration and student tracking are not prerequisites. See [study protocol](STUDY_V1.md).
+
 Simulation is a permanent product/research mode. No physical AV hardware is needed to contribute. Python 3.12 and Node 22+ are sufficient for simulation-basic. From repository root:
 
 ```bash
@@ -16,7 +18,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. For real local Qwen, install/start Ollama and run `ollama pull qwen3:8b`; stop the backend and relaunch with `backend/.venv/bin/python -m backend --profile simulation-ai`. This profile is strict and never substitutes Fake. Clear conflicting AGENT_BACKEND entries from backend/.env/environment. For controlled study run `--profile study`; researcher UI is `http://localhost:5173/?researcher=1`, participant UI has no query. Use `--profile hybrid` with independent adapter selections in ignored config/local.yaml. `--profile hardware` selects real devices and reports unavailable outputs honestly. Authority is selected separately in the researcher console.
+Open http://localhost:5173. For real local Qwen, install/start Ollama and run `ollama pull qwen3:8b`; stop the backend and relaunch with `backend/.venv/bin/python -m backend --profile simulation-ai`. This profile is strict and never substitutes Fake. Clear conflicting AGENT_BACKEND entries from backend/.env/environment. For controlled study run `--profile study`; researcher UI is `http://localhost:5173/research`, preserved participant UI is /research?view=participant. Use `--profile hybrid` with independent adapter selections in ignored config/local.yaml. `--profile hardware` selects real devices and reports unavailable outputs honestly. Authority is selected separately in the researcher console.
 
 ```bash
 backend/.venv/bin/python scripts/doctor.py --profile simulation-basic

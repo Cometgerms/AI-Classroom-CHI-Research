@@ -18,6 +18,7 @@ hardware:
   audio_output: simulation
 audio:
   frontend: xvf3800
+  doa_enabled: true # Optional context; set false for instructor-only acquisition without DoA polling.
   device_match: reSpeaker 3800
   host_api: null
   device_index: null
@@ -67,7 +68,7 @@ fusion:
   max_track_age_ms: 500
   smoothing: 0.35
 scenario:
-  default: lecture_start
+  default: v1_lecture
   tick_seconds: 0.1
   realtime: false
 estimator:
