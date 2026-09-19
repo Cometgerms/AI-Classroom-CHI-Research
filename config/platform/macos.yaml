@@ -1,0 +1,6 @@
+runtime:
+  platform: macos
+stt:
+  acceleration: metal
+vision:
+  acceleration: mps

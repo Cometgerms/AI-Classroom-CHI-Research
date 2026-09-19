@@ -1,0 +1,7 @@
+# XVF3800 refactor audit — 2026-09-19
+
+Before edits: read AGENTS, architecture/current state/decisions/models/latest handoff and audio/STT/VAD/vision/config/scripts. Baseline: 22 tests passed. No CI configuration exists. Working tree was clean.
+
+Conflicts: previous architecture centered optional SoundSourceTracker/Silero, not a combined audio frontend. Perception requirements installed Silero by default despite its optional model flag. STT only accepted pre-existing mono 16 kHz WAV; no UAC bridge existed. No layered config, profiles, device matching, telemetry, calibration, fusion or hardware doctor existed. ODAS was already optional (not required); preserve its generic abstraction as research-only. Preserve earlier decisions/handoffs, supersede prospectively.
+
+Implementation choices before invasive changes: read-only official Python control API pinned to a652fe79da3a292b25decc0e1e7f267d29bb0284; no firmware writes or flashing. Upstream Python returns radians, native CLI can include degree annotations. Four beam values retained inside adapter diagnostics; only auto-selected direction/energy cross normalized boundary. Unknown DoA confidence stays null. Uncalibrated energy threshold stays null and speech is inactive with a calibration warning, never guessed. Simulation profile remains FakeAgent and needs no device; hardware profile independently selects XVF audio while AV output adapters stay simulated. No real projector/PTZ integrations.

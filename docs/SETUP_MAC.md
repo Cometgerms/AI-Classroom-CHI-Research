@@ -1,3 +1,110 @@
+# Supported simulation — macOS
+
+Simulation is a permanent product/research mode. No physical AV hardware is needed to contribute. Python 3.12 and Node 22+ are sufficient for simulation-basic. From repository root:
+
+```bash
+python3.12 -m venv backend/.venv
+backend/.venv/bin/python -m pip install -r backend/requirements.txt
+backend/.venv/bin/python -m backend --profile simulation-basic
+```
+
+In a separate terminal:
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+Open http://localhost:5173. For real local Qwen, install/start Ollama and run `ollama pull qwen3:8b`; stop the backend and relaunch with `backend/.venv/bin/python -m backend --profile simulation-ai`. This profile is strict and never substitutes Fake. Clear conflicting AGENT_BACKEND entries from backend/.env/environment. For controlled study run `--profile study`; researcher UI is `http://localhost:5173/?researcher=1`, participant UI has no query. Use `--profile hybrid` with independent adapter selections in ignored config/local.yaml. `--profile hardware` selects real devices and reports unavailable outputs honestly. Authority is selected separately in the researcher console.
+
+```bash
+backend/.venv/bin/python scripts/doctor.py --profile simulation-basic
+backend/.venv/bin/python scripts/check_simulation_ai.py # requires Qwen/Ollama
+(cd backend && .venv/bin/python -m pytest -q)
+```
+
+See [scenarios, contracts and replay](SIMULATION.md). The optional hardware/model instructions below do not apply to simulation-basic.
+
+---
+
+# XVF3800 V1 quick start — Apple Silicon
+
+**XVF3800 is the V1 canonical audio front end.** ODAS/Silero are optional research adapters. These current instructions supplement the model/build details below. Run from repo root. No attached XVF was detected during this revision; live readings/capture need verification.
+
+```bash
+# Core, no microphone/camera/GPU dependencies:
+python3.12 -m venv backend/.venv
+backend/.venv/bin/python -m pip install -r backend/requirements.txt
+backend/.venv/bin/python -m backend --profile simulation-basic
+# Or: bash scripts/run-backend-macos.sh simulation
+```
+
+For local perception development use one optional runtime with both core and hardware packages (existing .venv-perception may be reused):
+
+```bash
+python3.12 -m venv .venv-perception # skip if it already exists
+.venv-perception/bin/python -m pip install -r backend/requirements.txt -r config/audio-requirements.txt -r config/perception-requirements.txt
+.venv-perception/bin/python scripts/bootstrap_xvf3800.py
+# Exit 2 means no accessible hardware/read failure; source acquisition can still succeed.
+.venv-perception/bin/python scripts/bootstrap_models.py --perception
+# Create local settings only if absent:
+[ -f config/local.yaml ] || cp config/local.example.yaml config/local.yaml
+.venv-perception/bin/python scripts/doctor.py --profile mac-local
+.venv-perception/bin/python -m backend --profile mac-local
+# Stop the backend before this explicit short microphone-capture test:
+.venv-perception/bin/python scripts/capture_xvf_stt.py --seconds 3
+.venv-perception/bin/python scripts/check_ai_stack.py --v1
+.venv-perception/bin/python scripts/benchmark_xvf3800.py --hardware
+(cd backend && .venv/bin/python -m pytest -q)
+```
+
+Example ignored local.yaml (threshold/calibration need measurements):
+
+```yaml
+runtime:
+  platform: macos
+  accelerator: auto
+hardware:
+  mode: hybrid
+  audio: xvf3800
+  camera: simulation
+  projector: simulation
+  recorder: simulation
+audio:
+  frontend: xvf3800
+  device_match: reSpeaker 3800
+  speech_activity:
+    energy_threshold: null
+    onset_ms: 150
+    release_ms: 400
+  xvf3800:
+    azimuth_offset_deg: 0
+    invert_azimuth: false
+xvf3800:
+  transport: usb
+  host_control: auto
+stt:
+  backend: whisper_cpp
+  acceleration: metal
+vision:
+  acceleration: mps
+agent:
+  backend: ollama
+```
+
+Explicit `--profile simulation-basic` overrides a hybrid local configuration. Environment overrides remain highest; clear stale AGENT_BACKEND or backend/.env values when debugging profile selection. `--profile hardware-xvf` is the equivalent generic hardware profile. Local config is gitignored, example config is shared; no indices/absolute paths need to be committed.
+
+The preferred adapter imports the pinned official Python host and uses libusb-package's bundled libusb backend. If libusb cannot load, check wheel/architecture and install `brew install libusb` as a platform troubleshooting step; no personal dylib path is hard-coded. The official native alternative is `host_control/mac_arm64/`; retain its executable and all adjacent dylibs together if diagnosing it manually. The application does not invoke the native executable. Do not run the whole app with sudo to bypass errors.
+
+macOS microphone permission belongs to the terminal/Python host application under System Settings → Privacy & Security → Microphone. Camera probing (`doctor --probe-camera`) may require Camera permission. Doctor otherwise enumerates only and does not record. Standard UAC audio and control telemetry are distinct: availability of one does not prove the other. No firmware flashing or parameter writes are performed.
+
+Read [audio contracts/calibration](AUDIO_FRONTEND.md) and [official ReSpeaker guide](https://wiki.seeedstudio.com/respeaker_xvf3800_introduction/). Discover the actual UAC profile; typical 16 kHz stereo and alternate 48 kHz firmware are not interchangeable assumptions. PortAudio host API filtering and a device-index override are local-only options if names are ambiguous. Calibrate energy/orientation/camera mapping before claiming active-speaker readiness.
+
+Optional research VAD only: `.venv-perception/bin/python -m pip install -r config/research-vad-requirements.txt`, then set `audio.speech_activity_backend: silero` locally and run stack checks with `--research-vad`. This is never the default install path. ODAS remains a separate research experiment.
+
+---
+
 # Apple Silicon setup
 
 Verified 2026-09-19: M1 Max, 64 GiB unified memory, macOS Darwin 25.5.0. Commands run from repository root unless specified. Python 3.12 avoids relying on optional ML wheel availability for system Python 3.14. Models/caches/vendor source are ignored by git.

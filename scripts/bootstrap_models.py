@@ -10,6 +10,7 @@ from ai_common import ROOT, api, manifest
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--secondary', action='store_true', help='Also pull optional Ollama vision model')
+    parser.add_argument('--pose', action='store_true', help='Include optional pose weights with --perception')
     parser.add_argument('--perception', action='store_true', help='Download YOLO weights using this Python environment')
     args = parser.parse_args()
     print(f'Platform: {platform.system()} / {platform.machine()}', flush=True)
@@ -46,7 +47,7 @@ def main():
             from ultralytics import YOLO
             cache = ROOT / 'models' / 'vision'
             cache.mkdir(parents=True, exist_ok=True)
-            for key in ('vision_detection', 'vision_pose'):
+            for key in (('vision_detection', 'vision_pose') if args.pose else ('vision_detection',)):
                 name = manifest()[key]['model']
                 print(f'Downloading/loading {name} in ignored models/vision', flush=True)
                 YOLO(str(cache / name))

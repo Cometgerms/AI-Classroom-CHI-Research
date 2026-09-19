@@ -1,0 +1,7 @@
+runtime:
+  profile: simulation
+agent:
+  backend: fake
+hardware:
+  mode: simulation
+  audio: simulation

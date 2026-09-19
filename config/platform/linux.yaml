@@ -1,0 +1,6 @@
+runtime:
+  platform: linux
+stt:
+  acceleration: auto
+vision:
+  acceleration: auto

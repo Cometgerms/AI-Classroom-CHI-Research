@@ -1,5 +1,3 @@
-# Optional, isolated environment. On Windows install the matching CUDA torch wheels first.
+# V1 host perception; install appropriate Torch CUDA wheels first on Windows.
 ultralytics==8.4.155
-silero-vad==6.2.2
-onnxruntime==1.30.0
 lap==0.5.13

@@ -20,3 +20,4 @@ vendor/
 *.onnx
 *.mlmodelc/
 artifacts/private/
+config/local.yaml

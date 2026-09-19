@@ -46,6 +46,8 @@ def whisper():
 
 def main():
     parser=argparse.ArgumentParser()
+    parser.add_argument('--v1',action='store_true',help='Require host STT and detection; use doctor for XVF hardware readiness')
+    parser.add_argument('--research-vad',action='store_true',help='Test optional Silero comparison adapter')
     parser.add_argument('--skip-ollama',action='store_true')
     args=parser.parse_args()
     results=[]
@@ -68,12 +70,12 @@ def main():
         import subprocess
         subprocess.run([str(whisper().executable),'--help'],check=True,capture_output=True,timeout=15)
         return 'CLI launched'
-    run('whisper.cpp',stt_binary)
+    run('whisper.cpp',stt_binary,args.v1)
     def stt_model():
         text=whisper().transcribe(ROOT/'vendor/whisper.cpp/samples/jfk.wav')
         assert 'country' in text.lower(), 'Sample transcript mismatch'
         return 'small.en transcribed upstream JFK sample'
-    run('small.en',stt_model)
+    run('small.en',stt_model,args.v1)
     def vad():
         from app.services.vad import SileroVoiceActivityDetector
         detector=SileroVoiceActivityDetector()
@@ -91,8 +93,12 @@ def main():
             kinds.update(e.kind for e in detector.process(values[offset:offset+512]))
         assert {'speech_started','speech_active','speech_ended'} <= kinds
         return 'silence plus all three speech events on upstream JFK sample'
-    run('Silero',vad)
-    run('Ultralytics',lambda:__import__('ultralytics').__version__)
+    if args.research_vad:
+        run('Silero',vad)
+    else:
+        print('Silero: SKIPPED (optional research backend)')
+        results.append(dict(component='Silero',status='SKIPPED',required=False))
+    run('Ultralytics',lambda:__import__('ultralytics').__version__,args.v1)
     def yolo(pose=False):
         import numpy as np
         from app.services.vision import UltralyticsPeople, UltralyticsPose
@@ -103,7 +109,7 @@ def main():
         result=(adapter.estimate if pose else adapter.track)(np.zeros((480,640,3),dtype=np.uint8))
         assert isinstance(result,list)
         return 'loaded weights + blank-frame inference'
-    run('yolo26n',yolo)
+    run('yolo26n',yolo,args.v1)
     run('yolo26n-pose',lambda:yolo(True))
     results.append(dict(component='ODAS',status='SKIPPED',required=False,detail='Native adapter and microphone calibration deferred'))
     print('ODAS: SKIPPED (see platform setup guide)')

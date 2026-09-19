@@ -33,7 +33,7 @@
   "speech_to_text": {
     "runtime": "whisper_cpp",
     "model": "small.en",
-    "required": false,
+    "required": true,
     "purpose": "local English classroom speech transcription",
     "source": "https://github.com/ggml-org/whisper.cpp",
     "license": "MIT",
@@ -45,7 +45,8 @@
       "base.en"
     ],
     "sha256": "c6138d6d58ecc8322097e0f987c32f1be8bb0a18532a3f88f734d1bbf9c41e5d",
-    "size_bytes": 487614201
+    "size_bytes": 487614201,
+    "required_for": "V1 perception; not simulation startup"
   },
   "vad": {
     "runtime": "silero",
@@ -57,12 +58,13 @@
     "version": "6.2.2",
     "local_install_status": "installed and inference verified on macOS arm64",
     "last_verified_date": "2026-09-19",
-    "compatibility": "Mac arm64 / Windows x64; see platform guides"
+    "compatibility": "Mac arm64 / Windows x64; see platform guides",
+    "notes": "Research/fallback only. XVF3800 provides normal V1 speech activity and DoA. Not installed by default."
   },
   "vision_detection": {
     "runtime": "ultralytics",
     "model": "yolo26n.pt",
-    "required": false,
+    "required": true,
     "purpose": "person detection and tracking",
     "source": "https://docs.ultralytics.com/models/yolo26/",
     "license": "AGPL-3.0 / Enterprise",
@@ -71,7 +73,8 @@
     "last_verified_date": "2026-09-19",
     "compatibility": "Mac arm64 / Windows x64; see platform guides",
     "sha256": "9b09cc8bf347f0fc8a5f7657480587f25db09b34bf33b0652110fb03a8ad4fef",
-    "size_bytes": 5544453
+    "size_bytes": 5544453,
+    "required_for": "V1 perception; not simulation startup"
   },
   "vision_pose": {
     "runtime": "ultralytics",
@@ -97,6 +100,21 @@
     "version": "unverified",
     "local_install_status": "skipped",
     "last_verified_date": null,
-    "compatibility": "Upstream requires ALSA and PulseAudio; native macOS/Windows not straightforward. Use Linux/WSL2 build path; microphone routing unverified."
+    "compatibility": "Upstream requires ALSA and PulseAudio; native macOS/Windows not straightforward. Use Linux/WSL2 build path; microphone routing unverified.",
+    "notes": "Research/fallback only. XVF3800 provides normal V1 speech activity and DoA. Not installed by default."
+  },
+  "audio_frontend": {
+    "runtime": "xvf3800",
+    "model": null,
+    "required": true,
+    "required_for": "V1 hardware perception; simulation adapter requires no device",
+    "purpose": "device AEC, beamforming, DoA and speech energy; host Whisper consumes processed UAC audio",
+    "version": "host commit a652fe79da3a292b25decc0e1e7f267d29bb0284",
+    "source": "https://github.com/respeaker/reSpeaker_XVF3800_USB_4MIC_ARRAY",
+    "license": "upstream repository terms; external source retained in ignored vendor directory",
+    "local_install_status": "pinned Python host source acquired and checksum verified; no XVF UAC/control device accessible on this Mac",
+    "last_verified_date": null,
+    "compatibility": "shared Python/PyUSB + PortAudio, macOS arm64 / Windows / Linux; USB control driver separate from UAC",
+    "last_probe_date": "2026-09-19"
   }
 }

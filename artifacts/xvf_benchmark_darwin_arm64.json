@@ -1,0 +1,12 @@
+{
+  "xvf_telemetry": {
+    "status": "UNAVAILABLE",
+    "error": "RuntimeError"
+  },
+  "simulated_state_change_to_action": {
+    "status": "PASS",
+    "milliseconds": 1.94508396089077,
+    "backend": "fake",
+    "note": "synthetic fusion + explicit Q&A state + policy + simulated execution; excludes audio capture and real camera latency"
+  }
+}

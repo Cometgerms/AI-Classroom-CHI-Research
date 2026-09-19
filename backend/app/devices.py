@@ -31,4 +31,26 @@ class SimDeviceExecutor:
         logger.log("device_action_executed", action=action.model_dump(), verified_state=state.devices.model_dump())
         return state
 
-executor = SimDeviceExecutor()
+class DeviceUnavailable(RuntimeError): pass
+
+class UnavailableDevice:
+    def __init__(self, backend): self.backend=backend
+    async def execute(self, action):
+        logger.log('device_action_failed', adapter=self.backend, action=action.model_dump(), reason='Adapter not implemented or configured')
+        raise DeviceUnavailable(f'{self.backend} adapter unavailable; no device state changed')
+
+class DeviceRouter:
+    def __init__(self): self.configure({name:'simulation' for name in ('camera_control','projector','audio_output','recorder')})
+    def configure(self, hardware):
+        self.backends={name:hardware[name] for name in ('camera_control','projector','audio_output','recorder')}
+        self.adapters={name:SimDeviceExecutor() if backend=='simulation' else UnavailableDevice(backend) for name,backend in self.backends.items()}
+        self.failed=set()
+    async def execute(self, action):
+        validate_action(action)
+        subsystem={'camera_focus':'camera_control','display_set_source':'projector','audio_set_mode':'audio_output','student_voice_lift':'audio_output'}.get(action.tool,'recorder')
+        if subsystem in self.failed:
+            logger.log('device_action_failed',subsystem=subsystem,reason='experiment injection')
+            raise DeviceUnavailable(f'{subsystem} unavailable')
+        return await self.adapters[subsystem].execute(action)
+
+executor = DeviceRouter()

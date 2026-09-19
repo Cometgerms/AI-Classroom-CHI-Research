@@ -1,0 +1,11 @@
+runtime:
+  profile: hardware
+  label: HARDWARE
+hardware:
+  mode: real
+  audio: xvf3800
+  camera: real
+  camera_control: ptz
+  audio_output: real
+  projector: pjlink
+  recorder: obs

@@ -1,0 +1,56 @@
+{
+  "environment": {
+    "os": "Darwin",
+    "os_version": "25.5.0",
+    "architecture": "arm64",
+    "cpu": "Apple M1 Max",
+    "system_ram_bytes": 68719476736,
+    "gpu": [
+      "Apple M1 Max"
+    ],
+    "gpu_memory_bytes": null,
+    "cuda_version": null,
+    "python_version": "3.12.13",
+    "node_version": "v22.23.2",
+    "gpu_memory_note": "Apple Silicon unified memory; shared with system RAM",
+    "ollama_version": "0.33.2",
+    "installed_models": [
+      {
+        "name": "qwen3-vl:2b-instruct",
+        "digest": "ea422f1e73652a95479954d8572d3c8c6022f628ce2d38a1a04aae1b7f2d5300",
+        "size": 1889519783
+      },
+      {
+        "name": "qwen3:8b",
+        "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+        "size": 5225388164
+      },
+      {
+        "name": "llama3.1:latest",
+        "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+        "size": 4920753328
+      }
+    ]
+  },
+  "checks": {
+    "MPS": "UNAVAILABLE",
+    "CUDA": "UNAVAILABLE",
+    "Ollama": "PASS",
+    "Qwen3 model": "PASS",
+    "Whisper": "PASS",
+    "Audio input devices": "PASS",
+    "XVF UAC": "UNAVAILABLE",
+    "XVF control VERSION": "UNAVAILABLE",
+    "XVF DoA": "UNAVAILABLE",
+    "XVF speech energy": "UNAVAILABLE",
+    "Camera enumeration": "PASS",
+    "Camera capture": "NOT_TESTED",
+    "Person tracking": "UNAVAILABLE"
+  },
+  "ready": {
+    "Simulation basic": true,
+    "Simulation AI": true,
+    "XVF hybrid": false,
+    "Full hardware": false
+  }
+}

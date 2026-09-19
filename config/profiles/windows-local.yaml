@@ -1,0 +1,5 @@
+runtime:
+  profile: windows-local
+hardware:
+  mode: hybrid
+  audio: xvf3800

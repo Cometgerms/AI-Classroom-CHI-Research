@@ -1,0 +1,6 @@
+# XVF hardware only; core simulation does not import these.
+sounddevice>=0.5,<0.6
+pyusb>=1.3,<2
+libusb-package>=1.0,<2
+numpy>=1.26
+scipy>=1.12

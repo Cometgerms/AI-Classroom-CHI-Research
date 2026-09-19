@@ -1,0 +1,35 @@
+{
+  "profile": "simulation-ai",
+  "agent": "qwen3:8b",
+  "strict": true,
+  "results": [
+    {
+      "condition": "manual",
+      "status": "PASS",
+      "activity": "Q&A",
+      "tools": []
+    },
+    {
+      "condition": "assistive",
+      "status": "PASS",
+      "activity": "Q&A",
+      "tools": [
+        "camera_focus",
+        "audio_set_mode",
+        "student_voice_lift",
+        "recording_set_layout"
+      ]
+    },
+    {
+      "condition": "autonomous",
+      "status": "PASS",
+      "activity": "Q&A",
+      "tools": [
+        "camera_focus",
+        "audio_set_mode",
+        "student_voice_lift",
+        "recording_set_layout"
+      ]
+    }
+  ]
+}

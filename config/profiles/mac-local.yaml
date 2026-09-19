@@ -1,0 +1,5 @@
+runtime:
+  profile: mac-local
+hardware:
+  mode: hybrid
+  audio: xvf3800

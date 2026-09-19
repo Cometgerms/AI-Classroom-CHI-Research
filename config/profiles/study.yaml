@@ -1,0 +1,14 @@
+agent:
+  backend: fake
+hardware:
+  audio: simulation
+  audio_output: simulation
+  camera: simulation
+  camera_control: simulation
+  mode: simulation
+  projector: simulation
+  recorder: simulation
+runtime:
+  label: STUDY
+  profile: study
+  participant_view: true

@@ -4,63 +4,61 @@
     "status": "PASS",
     "detail": "0.33.2",
     "required": true,
-    "seconds": 0.018
+    "seconds": 0.016
   },
   {
     "component": "qwen3:8b",
     "status": "PASS",
     "detail": "chat + structured JSON + typed tool call",
     "required": true,
-    "seconds": 1.764
+    "seconds": 3.616
   },
   {
     "component": "qwen3-vl:2b-instruct",
     "status": "PASS",
     "detail": "image input + structured classification (blank fixture; not accuracy validation)",
     "required": false,
-    "seconds": 0.174
+    "seconds": 3.712
   },
   {
     "component": "whisper.cpp",
     "status": "PASS",
     "detail": "CLI launched",
-    "required": false,
-    "seconds": 0.022
+    "required": true,
+    "seconds": 0.028
   },
   {
     "component": "small.en",
     "status": "PASS",
     "detail": "small.en transcribed upstream JFK sample",
-    "required": false,
-    "seconds": 0.6
+    "required": true,
+    "seconds": 1.171
   },
   {
     "component": "Silero",
-    "status": "PASS",
-    "detail": "silence plus all three speech events on upstream JFK sample",
-    "required": false,
-    "seconds": 1.345
+    "status": "SKIPPED",
+    "required": false
   },
   {
     "component": "Ultralytics",
     "status": "PASS",
     "detail": "8.4.155",
-    "required": false,
-    "seconds": 0.141
+    "required": true,
+    "seconds": 2.201
   },
   {
     "component": "yolo26n",
     "status": "PASS",
     "detail": "loaded weights + blank-frame inference",
-    "required": false,
-    "seconds": 1.393
+    "required": true,
+    "seconds": 2.302
   },
   {
     "component": "yolo26n-pose",
     "status": "PASS",
     "detail": "loaded weights + blank-frame inference",
     "required": false,
-    "seconds": 0.197
+    "seconds": 0.167
   },
   {
     "component": "ODAS",

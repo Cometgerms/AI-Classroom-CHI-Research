@@ -1,0 +1,42 @@
+version: 1
+duration: 3.5
+tick_seconds: 0.1
+calibration:
+  calibrated: true
+  points:
+  - image_x: 0
+    azimuth_deg: -90
+  - image_x: 1
+    azimuth_deg: 90
+events:
+- at: 0
+  audio:
+    speech_active: true
+    doa_degrees: 0
+    audio_device_available: true
+    activity_calibrated: true
+  tracks:
+  - track_id: instructor
+    image_x: 0.5
+    role: instructor
+  - &id001
+    track_id: student_3
+    image_x: 0.8
+    role: student
+  - &id002
+    track_id: student_2
+    image_x: 0.2
+    role: student
+  scene:
+    instructor_speaking: true
+    presentation_active: true
+    transcript: Today we introduce the lesson.
+- at: 1.2
+  audio:
+    doa_degrees: -27
+  tracks:
+  - track_id: instructor
+    image_x: 0.35
+    role: instructor
+  - *id001
+  - *id002

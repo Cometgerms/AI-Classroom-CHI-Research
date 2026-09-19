@@ -1,0 +1,74 @@
+runtime:
+  profile: simulation-basic
+  accelerator: auto
+  label: SIMULATION
+  participant_view: false
+agent:
+  backend: fake
+  model: qwen3:8b
+  base_url: http://localhost:11434
+  strict: false
+hardware:
+  mode: simulation
+  camera: simulation
+  audio: auto
+  projector: simulation
+  recorder: simulation
+  camera_control: simulation
+  audio_output: simulation
+audio:
+  frontend: xvf3800
+  device_match: reSpeaker 3800
+  host_api: null
+  device_index: null
+  sample_rate: null
+  channels: null
+  stt_channel: 0
+  poll_hz: 10
+  speech_activity_backend: xvf
+  xvf3800:
+    azimuth_offset_deg: 0
+    invert_azimuth: false
+  speech_activity:
+    energy_threshold: null
+    onset_ms: 150
+    release_ms: 400
+xvf3800:
+  transport: usb
+  host_control: auto
+  vendor_dir: vendor/xvf3800
+  usb_timeout_ms: 100
+stt:
+  backend: whisper_cpp
+  model: small.en
+  acceleration: auto
+vision:
+  enabled: true
+  acceleration: auto
+semantic_vision:
+  enabled: false
+camera:
+  calibration:
+    type: piecewise_linear
+    calibrated: false
+    points:
+    - image_x: 0.0
+      azimuth_deg: -90
+    - image_x: 0.5
+      azimuth_deg: 0
+    - image_x: 1.0
+      azimuth_deg: 90
+  device: null
+  roles: {}
+fusion:
+  angular_tolerance_deg: 20
+  ambiguity_margin_deg: 5
+  onset_ms: 200
+  max_track_age_ms: 500
+  smoothing: 0.35
+scenario:
+  default: lecture_start
+  tick_seconds: 0.1
+  realtime: false
+estimator:
+  sustain_seconds: 0.5

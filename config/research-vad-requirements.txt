@@ -1,0 +1,3 @@
+# Optional comparison backend, not normal V1.
+silero-vad==6.2.2
+onnxruntime==1.30.0

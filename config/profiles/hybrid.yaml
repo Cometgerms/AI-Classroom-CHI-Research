@@ -1,0 +1,5 @@
+runtime:
+  profile: hybrid
+  label: HYBRID
+hardware:
+  mode: hybrid

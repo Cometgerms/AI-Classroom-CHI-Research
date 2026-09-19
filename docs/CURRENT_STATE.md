@@ -1,15 +1,19 @@
 # Current state — 2026-09-19
 
-**Works:** FastAPI/React simulator with unchanged FakeAgent, selectable RuleAgent/OllamaAgent, strict intent validation and stale-inference rejection. Manual disables AI; Assistive requires Apply; Autonomous executes permitted actions with Undo/Take Control. Same state/tools/devices/UI across conditions.
+**Simulation is a supported product/research runtime.** Developers do not need physical AV hardware. Profiles: simulation-basic, simulation-ai, hybrid, hardware and study. Manual / Assistive / Autonomous authority is independent of profile. Start with [simulation reference](SIMULATION.md), [Mac setup](SETUP_MAC.md), or [Windows setup](SETUP_WINDOWS.md).
 
-**Simulated:** all AV devices, scenario observations/activity, controlled wrong-Q&A, device readback. Optional temporal estimator and digital crop director are tested but not wired into the UI pipeline.
+**Works:** normalized sensor timelines and replay → geometric speaker fusion → sustained state estimator → Fake/Rule/strict local Qwen → delegation/safety → simulated AV. Fifteen data-driven scenarios include all requested ordinary events and controlled wrong-Q&A/camera/display/audio plus device failure. Injection metadata is logged internally and omitted from participant presentation. Study UI hides researcher controls/debug information; ?researcher=1 shows them. Core startup needs no hardware packages or Ollama.
 
-**Real:** local model inference only. M1 Max/64 GiB, Ollama 0.33.2; qwen3:8b and qwen3-vl:2b-instruct downloaded/verified. whisper.cpp 1.9.4-dev Metal + small.en, Silero 6.2.2, Ultralytics 8.4.155 + yolo26n/yolo26n-pose verified in isolated environment. No real AV or sensor capture. ODAS skipped due native platform dependencies.
+**Adapters:** XVF3800 remains canonical V1 audio, with separate UAC and read-only telemetry. Real/sim audio and camera use identical contracts. Hybrid independently selects sensing and output subsystems; live observations feed the shared pipeline. Real camera capture is lazy and explicitly configured. Physical PJLink/PTZ/OBS/audio output are unavailable placeholders, never successful simulated substitutes. Physical threshold/geometry defaults remain uncalibrated.
 
-**Known issues:** one in-memory session/process, no replay, individual-action undo, console visible by default, approval lacks client recommendation-ID binding, no calibrated perception ingestion. Windows/CUDA not yet verified. External-drive AppleDouble metadata produces tooling warnings; see setup guide. Smoke/benchmark fixtures do not prove classroom accuracy.
+**Models:** actual Qwen3:8b/Ollama 0.33.2 on M1 Max/64 GiB passed strict simulation-ai full-loop smoke in all three authority conditions. Existing whisper.cpp Metal/small.en, optional YOLO/VLM and prior XVF audit remain intact. No accessible XVF was found; no physical camera capture/AV verification was performed. Windows/CUDA remain unverified locally.
 
-**Next milestone:** Windows stack verification, then timestamped observation replay feeding the estimator and VAD-gated STT, preserving deterministic study scenarios.
+**Replay:** versioned normalized trial tapes include initial simulated devices, virtual calibration and controlled injections. Replay preserves current participant/authority for comparisons. GET/POST /api/replay and scripts/replay_trial.py support export/recovery from persistent JSONL. Full arbitrary participant-session action reenactment is not implemented. Qwen replay re-infers; Fake is deterministic.
 
-**Last verified:** baseline 4 tests; final **22 passed**. Frontend build and both server launch checks passed. Strict real Ollama API checks passed all three conditions. All installed stack components passed inference; ODAS SKIPPED. Bootstrap repeat passed without re-download. Reports/benchmarks in artifacts; exact launch/install commands in SETUP_MAC.md and SETUP_WINDOWS.md. Ollama running; temporary app servers stopped.
+**Verification:** **95 passed, 1 hardware-optional deselected**; frontend build passed (dependency directive warnings); study participant/researcher browser checks passed; strict actual Qwen three-condition smoke passed twice; doctor Simulation basic/AI READY, XVF hybrid/Full hardware NOT READY. Three-OS CI configured, not remotely run. Source syntax, tape extraction and whitespace checks passed.
 
-**Latest handoff:** [2026-09-19_1432_local-model-bootstrap.md](HANDOFFS/2026-09-19_1432_local-model-bootstrap.md). Model versions/digests in MODELS.md and config/models.yaml.
+**Limits:** single in-memory session; one evaluation per scenario trial; individual-action undo; no client recommendation-ID binding; researcher toggle is local presentation, not authentication. Hybrid still needs upstream scene semantics/STT, physical calibration and hardware validation. No physical projector/PTZ integration was started.
+
+**Next:** extend scripted trial/Qwen regression coverage, then validate calibrated XVF/camera hybrid data through the shared pipeline. Preserve hardware-free CI and simulation as permanent supported modes.
+
+**Latest handoff:** [2026-09-19_1535_supported-simulation-runtime.md](HANDOFFS/2026-09-19_1535_supported-simulation-runtime.md). Earlier handoffs are immutable. This work and the earlier XVF refactor remain uncommitted.

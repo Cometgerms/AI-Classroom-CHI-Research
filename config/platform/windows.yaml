@@ -1,0 +1,6 @@
+runtime:
+  platform: windows
+stt:
+  acceleration: cuda
+vision:
+  acceleration: cuda

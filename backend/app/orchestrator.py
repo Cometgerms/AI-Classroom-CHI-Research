@@ -2,13 +2,13 @@ from uuid import uuid4
 from datetime import datetime, timezone
 from .agent.factory import get_agent
 from .delegation import policy
-from .devices import executor
+from .devices import executor, DeviceUnavailable
 from .models import Condition, Recommendation, RoomState
 from .state_store import store
 from .study_logger import logger
 
 class Orchestrator:
-    async def evaluate(self):
+    async def evaluate(self, decision_transform=None):
         async with store.control_lock:
             state = await store.snapshot()
             store.revision += 1  # Supersede any older inference on the same state.
@@ -19,6 +19,8 @@ class Orchestrator:
             return {"decision": None, "recommendation": None, "executed": []}
 
         decision = await get_agent().decide(state)
+        if decision_transform is not None:
+            decision = decision_transform(decision)
         async with store.control_lock:
             if store.revision != revision:
                 logger.log("agent_decision_discarded", reason="state_changed_during_inference")
@@ -26,13 +28,17 @@ class Orchestrator:
             logger.log("agent_decision", condition=state.condition.value, decision=decision.model_dump())
 
             executed=[]
+            failures=[]
             recommend=[]
             for action in decision.actions:
                 p = policy.evaluate(state.condition, action)
                 logger.log("policy_decision", action=action.model_dump(), result=p.result, reason=p.reason)
                 if p.result == "allow":
-                    await executor.execute(action)
-                    executed.append(action)
+                    try:
+                        await executor.execute(action)
+                        executed.append(action)
+                    except DeviceUnavailable as exc:
+                        failures.append({"tool":action.tool,"error":str(exc)})
                 elif p.result == "recommend":
                     recommend.append(action)
 
@@ -53,6 +59,7 @@ class Orchestrator:
                 "decision": decision,
                 "recommendation": recommendation,
                 "executed": executed,
+                "failures": failures,
             }
 
 orchestrator = Orchestrator()

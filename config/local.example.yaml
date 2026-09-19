@@ -1,0 +1,17 @@
+runtime:
+  profile: hardware-xvf
+hardware:
+  mode: hybrid
+  audio: xvf3800
+# Copy to ignored config/local.yaml, then calibrate locally.
+audio:
+  device_match: reSpeaker 3800
+  speech_activity:
+    energy_threshold: null # TBD: measure idle/voice levels in this room
+  xvf3800:
+    azimuth_offset_deg: 0
+    invert_azimuth: false
+# Shared calibration points are examples, not measured geometry.
+camera:
+  calibration:
+    calibrated: false

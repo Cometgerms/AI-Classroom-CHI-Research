@@ -1,0 +1,5 @@
+runtime:
+  profile: hardware-xvf
+hardware:
+  mode: hybrid
+  audio: xvf3800
