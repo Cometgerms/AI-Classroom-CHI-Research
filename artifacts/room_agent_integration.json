@@ -1,0 +1,20 @@
+[
+  {
+    "condition": "manual",
+    "status": "PASS",
+    "backend": "ollama",
+    "model": "qwen3:8b"
+  },
+  {
+    "condition": "assistive",
+    "status": "PASS",
+    "backend": "ollama",
+    "model": "qwen3:8b"
+  },
+  {
+    "condition": "autonomous",
+    "status": "PASS",
+    "backend": "ollama",
+    "model": "qwen3:8b"
+  }
+]

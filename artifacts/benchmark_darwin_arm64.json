@@ -1,0 +1,42 @@
+{
+  "machine": "Darwin_arm64",
+  "method": "Single run; cold means model unloaded, OS file cache not cleared. No accuracy measurement.",
+  "results": {
+    "qwen3:8b": {
+      "status": "PASS",
+      "cold_request_seconds": 3.5105179169913754,
+      "model_load_seconds": 1.350709542,
+      "first_token_seconds": 1.4831401669653133,
+      "tokens_per_second": 18.740814534981208,
+      "structured_tool_call_seconds": 1.6717817920725793
+    },
+    "qwen3-vl:2b-instruct": {
+      "status": "PASS",
+      "one_frame_seconds": 2.8115849579917267,
+      "activity": "UNKNOWN",
+      "fixture": "provided image"
+    },
+    "whisper_small.en": {
+      "status": "PASS",
+      "seconds": 0.6143167089903727,
+      "audio_seconds": 11.0,
+      "real_time_factor": 0.05584697354457934,
+      "includes_model_load": true
+    },
+    "yolo26n": {
+      "status": "PASS",
+      "fps": 26.783230284324787,
+      "iterations": 10,
+      "device": "cpu",
+      "people_detected": 4,
+      "frame_dimensions": [
+        1080,
+        810,
+        3
+      ],
+      "note": "warm frame inference, excludes video decode; provided image"
+    }
+  },
+  "fixture_source": "https://raw.githubusercontent.com/ultralytics/assets/main/im/bus.jpg",
+  "fixture_note": "Public people-detection proxy, not classroom footage; JFK audio from whisper.cpp samples"
+}

@@ -1,0 +1,71 @@
+[
+  {
+    "component": "Ollama",
+    "status": "PASS",
+    "detail": "0.33.2",
+    "required": true,
+    "seconds": 0.018
+  },
+  {
+    "component": "qwen3:8b",
+    "status": "PASS",
+    "detail": "chat + structured JSON + typed tool call",
+    "required": true,
+    "seconds": 1.764
+  },
+  {
+    "component": "qwen3-vl:2b-instruct",
+    "status": "PASS",
+    "detail": "image input + structured classification (blank fixture; not accuracy validation)",
+    "required": false,
+    "seconds": 0.174
+  },
+  {
+    "component": "whisper.cpp",
+    "status": "PASS",
+    "detail": "CLI launched",
+    "required": false,
+    "seconds": 0.022
+  },
+  {
+    "component": "small.en",
+    "status": "PASS",
+    "detail": "small.en transcribed upstream JFK sample",
+    "required": false,
+    "seconds": 0.6
+  },
+  {
+    "component": "Silero",
+    "status": "PASS",
+    "detail": "silence plus all three speech events on upstream JFK sample",
+    "required": false,
+    "seconds": 1.345
+  },
+  {
+    "component": "Ultralytics",
+    "status": "PASS",
+    "detail": "8.4.155",
+    "required": false,
+    "seconds": 0.141
+  },
+  {
+    "component": "yolo26n",
+    "status": "PASS",
+    "detail": "loaded weights + blank-frame inference",
+    "required": false,
+    "seconds": 1.393
+  },
+  {
+    "component": "yolo26n-pose",
+    "status": "PASS",
+    "detail": "loaded weights + blank-frame inference",
+    "required": false,
+    "seconds": 0.197
+  },
+  {
+    "component": "ODAS",
+    "status": "SKIPPED",
+    "required": false,
+    "detail": "Native adapter and microphone calibration deferred"
+  }
+]
